@@ -40,11 +40,48 @@ var getJSON = function(url, cb) {
 var getComments = function(data) {
     return data.data.children.map(function(obj) {
         return obj.data.body;
-    })
+    });
+};
+
+var getSentences = function(strArr) {
+
+};
+
+var clean = function(sentence) {
+    sentence = sentence.trim();
+    sentence = sentence.toLowerCase();
+    sentence = sentence.replace(/(\W)/g, '');
 };
 
 var generateIpsum = function(res) {
-    console.log(getComments(res));
+    var comments  = getComments(res);
+    var sentences = getSentences(comments);
+
+    var generator = new Generator();
+
+    sentences.forEach(function(sentence) {
+        generator.seed(sentence);
+    });
+
+    var ipsum = "";
+    for(var i=0; i<300; i++)
+        ipsum = ipsum + generator.next();
+    return ipsum;
+};
+
+var generateSentence = function(generator) {
+    var length = Math.floor(Math.random() * 5) + 3;
+
+    var sentence = "";
+    for(var i=0; i<length; i++)
+        sentence += generator.next();
+    sentence += randomPunctuation();
+    sentence[0] = sentence[0].toUpperCase();
+    return sentence;
+};
+
+var randomPunctuation = function() {
+    return Math.random()<0.9? '.' : '!';
 };
 
 var output = function(str) {
