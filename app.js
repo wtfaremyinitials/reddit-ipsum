@@ -10,7 +10,7 @@ var main = function() {
         return;
     }
 
-    getJSON('http://reddit.com/r/' + subreddit + '/comments.json', generateIpsum);
+    getJSONP('http://reddit.com/r/' + subreddit + '/comments.json', generateIpsum);
 };
 
 var Generator = function() {
@@ -53,29 +53,14 @@ Generator.prototype = {
     }
 };
 
-var getJSON = function(url, cb) {
+var getJSONP = function(url, cb) {
     btn.disabled = true;
 
-    request = new XMLHttpRequest();
-    request.open('GET', url, true);
+    window.callback = cb;
 
-    var error = function() {
-        alert('An error occured when connecting to reddit. Sorry about that.');
-    };
-
-    request.onload = function() {
-        if (request.status >= 200 && request.status < 400){
-            data = JSON.parse(request.responseText);
-            btn.disabled = false;
-            cb(data);
-        } else {
-            error();
-        }
-    };
-
-    request.onerror = error;
-
-    request.send();
+    var script = document.createElement('script');
+    script.src = url + '?jsonp=callback';
+    document.getElementsByTagName('head')[0].appendChild(script);
 };
 
 var getComments = function(data) {
