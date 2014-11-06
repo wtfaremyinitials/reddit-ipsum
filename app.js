@@ -3,7 +3,7 @@ var btn = document.querySelector('button');
 var out = document.querySelector('p.output');
 
 var main = function() {
-    var subreddit = box.value.match(/\/?r?\/?(\w+)/)[1];
+    var subreddit = getSubreddit(box.value);
 
     if(!subreddit) {
         alert('Please enter a valid subreddit.');
@@ -11,6 +11,10 @@ var main = function() {
     }
 
     getJSONP('http://reddit.com/r/' + subreddit + '/comments.json', generateIpsum);
+};
+
+var getSubreddit = function(str) {
+    return str.match(/\/?r?\/?(\w+)/)[1];
 };
 
 var Generator = function() {
@@ -157,3 +161,10 @@ var output = function(str) {
 };
 
 btn.addEventListener('click', main);
+
+if(location.hash) {
+    var subreddit = getSubreddit(location.hash.substr('1'));
+
+    if(subreddit)
+        getJSONP('http://reddit.com/r/' + subreddit + '/comments.json', generateIpsum);
+}
