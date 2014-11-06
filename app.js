@@ -56,11 +56,14 @@ Generator.prototype = {
 var getJSONP = function(url, cb) {
     btn.disabled = true;
 
-    window.callback = cb;
+    window.callback = function(data) {
+        btn.disabled = false;
+        cb(data);
+    };
 
     var script = document.createElement('script');
     script.src = url + '?jsonp=callback';
-    document.getElementsByTagName('head')[0].appendChild(script);
+    document.body.appendChild(script);
 };
 
 var getComments = function(data) {
