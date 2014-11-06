@@ -95,6 +95,8 @@ var clean = function(sentence) {
     sentence = sentence.toLowerCase();
     sentence = sentence.replace(/[^\w\s]/g, '');
 
+    sentence = sentence.replace(/\d/g, ''); // Remove numbers. They don't work so well.
+
     sentence = sentence.replace('i ', 'I '); // Little hack
 
     return sentence;
