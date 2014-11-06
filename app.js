@@ -103,8 +103,6 @@ var generateIpsum = function(res) {
 
     var generator = new Generator();
 
-    window.gen = generator;
-
     sentences.forEach(function(sentence) {
         generator.seed(sentence);
     });
