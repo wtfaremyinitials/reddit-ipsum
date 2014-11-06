@@ -26,13 +26,16 @@ Generator.prototype = {
         var allWords = Object.keys(dictionary);
         var numWords = allWords.length;
 
-        if(!dictionary[this.last])
-            this.last = allWords[Math.floor(Math.random()*numWords)];
+        var word = "";
 
-        var possibleWords = Object.keys(dictionary[this.last]);
-        var numPossibleWords = possibleWords.length;
-
-        var word = possibleWords[Math.floor(Math.random()*numPossibleWords)];
+        if(!dictionary[this.last]) {
+            var index = Math.floor(Math.random()*numWords);
+            word = allWords[index];
+        } else {
+            var possibleWords = Object.keys(dictionary[this.last]);
+            var numPossibleWords = possibleWords.length;
+            word = possibleWords[Math.floor(Math.random()*numPossibleWords)];
+        }
 
         this.last = word;
 
@@ -102,6 +105,8 @@ var generateIpsum = function(res) {
     var sentences = getSentences(comments);
 
     var generator = new Generator();
+
+    window.generator = generator;
 
     sentences.forEach(function(sentence) {
         generator.seed(sentence);
