@@ -12,6 +12,41 @@ var main = function() {
     getJSON('http://reddit.com/r/' + subreddit + '/comments.json', generateIpsum);
 };
 
+var Generator = function() {
+    this.dictionary = {};
+    this.last = '';
+};
+
+Generator.prototype = {
+    constructor: Generator,
+    next: function() {
+        var dictionary = this.dictionary;
+
+        var allWords = Object.keys(dictionary);
+        var numWords = allWords.length;
+
+        if(!dictionary[last])
+            last = allWords[Math.floor(Math.random()*numWords)];
+
+        var possibleWords = Object.keys(dictionary[last]);
+        var numPossibleWords = possibleWords.length;
+
+        var word = possibleWords[Math.floor(Math.random()*numPossibleWords)];
+
+        this.last = word;
+
+        return word || '';
+    },
+    seed: function(str) {
+        var words = str.split(/\W+/);
+
+        for(var i=0; i<words.length-1; i++) {
+            dictionary[words[i]] = dictionary[words[i]] || {};
+            dictionary[words[i]][words[i+1]] = dictionary[words[i]][words[i+1]] + 1 || 1;
+        }
+    }
+};
+
 var getJSON = function(url, cb) {
     btn.disabled = true;
 
@@ -43,14 +78,25 @@ var getComments = function(data) {
     });
 };
 
-var getSentences = function(strArr) {
+var getSentences = function(comments) {
+    var allSentences = [];
 
+    comments.forEach(function(comment) {
+        comment.match(/^\\s+[A-Za-z,;'\"\\s]+[.?!]$/g/**thaks stackoverflow!**/).forEach(function(sentence) {
+            allSentences.push(sentence);
+        });
+    });
+
+    allSentences = allSentences.map(clean);
+
+    return sentences;
 };
 
 var clean = function(sentence) {
     sentence = sentence.trim();
     sentence = sentence.toLowerCase();
-    sentence = sentence.replace(/(\W)/g, '');
+    sentence = sentence.replace(/[^\w\s]/g, '');
+    return sentence;
 };
 
 var generateIpsum = function(res) {
@@ -65,7 +111,7 @@ var generateIpsum = function(res) {
 
     var ipsum = "";
     for(var i=0; i<300; i++)
-        ipsum = ipsum + generator.next();
+        ipsum =+ generateSentence(generator);
     return ipsum;
 };
 
@@ -73,10 +119,12 @@ var generateSentence = function(generator) {
     var length = Math.floor(Math.random() * 5) + 3;
 
     var sentence = "";
+
     for(var i=0; i<length; i++)
         sentence += generator.next();
     sentence += randomPunctuation();
     sentence[0] = sentence[0].toUpperCase();
+
     return sentence;
 };
 
